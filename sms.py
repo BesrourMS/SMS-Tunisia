@@ -44,11 +44,15 @@ async def send_sms(session, receiver_number):
 
 async def main():
     phone_numbers = ['+21699101961']
+    phone_number_regex = re.compile(r'^(?:(?:\+216|00216)\s?[2-9]\d{7}|[2459]\d{7})$')
 
     async with aiohttp.ClientSession() as session:
         for number in phone_numbers:
-            await send_sms(session, number)
-            await asyncio.sleep(1)
+            if phone_number_regex.match(number):
+                await send_sms(session, number)
+                await asyncio.sleep(1)
+            else:
+                print(f"Invalid phone number format: {number}")
 
 # Run the main coroutine
 loop = asyncio.get_event_loop()
